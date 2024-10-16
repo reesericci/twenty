@@ -44,8 +44,11 @@ import { ViewGroupsVisibilityDropdownSection } from '@/views/components/ViewGrou
 import { useRecordGroupStates } from '@/object-record/record-group/hooks/useRecordGroupStates';
 import { useRecordGroupVisibility } from '@/object-record/record-group/hooks/useRecordGroupVisibility';
 import { useRecordGroupReorder } from '@/object-record/record-group/hooks/useRecordGroupReorder';
+import { useRecordGroupSelector } from '@/object-record/record-group/hooks/useRecordGroupSelector';
 
 type RecordIndexOptionsMenu =
+  | 'groupBy'
+  | 'groupBySelectField'
   | 'viewGroups'
   | 'hiddenViewGroups'
   | 'fields'
@@ -124,8 +127,12 @@ export const RecordIndexOptionsDropdownContent = ({
     hiddenRecordGroups,
     visibleRecordGroups,
     viewGroupFieldMetadataItem,
+    selectableFieldMetadataItems,
   } = useRecordGroupStates({
     objectNameSingular,
+  });
+  const { handleFieldMetadataItemChange } = useRecordGroupSelector({
+    viewBarComponentId: recordIndexId,
   });
   const { handleVisibilityChange: handleRecordGroupVisibilityChange } =
     useRecordGroupVisibility({
@@ -195,6 +202,16 @@ export const RecordIndexOptionsDropdownContent = ({
     <>
       {!currentMenu && (
         <DropdownMenuItemsContainer>
+          <MenuItem
+            onClick={() =>
+              viewGroupFieldMetadataItem
+                ? handleSelectMenu('groupBy')
+                : handleSelectMenu('groupBySelectField')
+            }
+            LeftIcon={IconTag}
+            text="Group by"
+            hasSubMenu
+          />
           {viewGroupMenuItem}
           <MenuItem
             onClick={() => handleSelectMenu('fields')}
@@ -222,6 +239,70 @@ export const RecordIndexOptionsDropdownContent = ({
             text={`Deleted ${objectNamePlural}`}
           />
         </DropdownMenuItemsContainer>
+      )}
+      {currentMenu === 'groupBySelectField' && (
+        <>
+          <DropdownMenuHeader StartIcon={IconChevronLeft} onClick={resetMenu}>
+            Group by
+          </DropdownMenuHeader>
+          <MenuItem text="None" />
+          {selectableFieldMetadataItems.map((fieldMetadataItem) => (
+            <MenuItem
+              key={fieldMetadataItem.id}
+              onClick={() => {
+                handleFieldMetadataItemChange(fieldMetadataItem);
+              }}
+              LeftIcon={getIcon(fieldMetadataItem.icon)}
+              text={fieldMetadataItem.label}
+            />
+          ))}
+          <DropdownMenuSeparator />
+          <UndecoratedLink
+            to={viewGroupSettingsUrl}
+            onClick={() => {
+              setNavigationMemorizedUrl(location.pathname + location.search);
+              closeDropdown();
+            }}
+          >
+            <DropdownMenuItemsContainer>
+              <MenuItem LeftIcon={IconSettings} text="Create select field" />
+            </DropdownMenuItemsContainer>
+          </UndecoratedLink>
+        </>
+      )}
+      {currentMenu === 'groupBy' && (
+        <>
+          <DropdownMenuHeader StartIcon={IconChevronLeft} onClick={resetMenu}>
+            Group by
+          </DropdownMenuHeader>
+          <MenuItem
+            onClick={() => handleSelectMenu('groupBySelectField')}
+            text={`Group by "${viewGroupFieldMetadataItem?.label}"`}
+            hasSubMenu
+          />
+          <DropdownMenuSeparator />
+          <ViewGroupsVisibilityDropdownSection
+            title={viewGroupFieldMetadataItem?.label ?? ''}
+            viewGroups={visibleRecordGroups}
+            onDragEnd={handleRecordGroupOrderChange}
+            onVisibilityChange={handleRecordGroupVisibilityChange}
+            isDraggable
+            showSubheader={false}
+            showDragGrip={true}
+          />
+          {hiddenRecordGroups.length > 0 && (
+            <>
+              <DropdownMenuSeparator />
+              <DropdownMenuItemsContainer>
+                <MenuItemNavigate
+                  onClick={() => handleSelectMenu('hiddenViewGroups')}
+                  LeftIcon={IconEyeOff}
+                  text={`Hidden ${viewGroupFieldMetadataItem?.label ?? ''}`}
+                />
+              </DropdownMenuItemsContainer>
+            </>
+          )}
+        </>
       )}
       {currentMenu === 'viewGroups' && (
         <>

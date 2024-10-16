@@ -41,6 +41,7 @@ export const usePersistViewGroupRecords = () => {
                 viewId: view.id,
                 isVisible: viewGroup.isVisible,
                 position: viewGroup.position,
+                fieldValue: viewGroup.fieldValue,
                 id: v4(),
               },
             },

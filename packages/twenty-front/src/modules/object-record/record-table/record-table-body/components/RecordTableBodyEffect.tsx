@@ -16,11 +16,18 @@ import { useScrollTopValue } from '@/ui/utilities/scroll/hooks/useScrollTopValue
 import { useSetRecoilComponentState } from '@/ui/utilities/state/component-state/hooks/useSetRecoilComponentState';
 import { isNonEmptyString } from '@sniptt/guards';
 import { useScrollToPosition } from '~/hooks/useScrollToPosition';
+import { useRecordGroupStates } from '@/object-record/record-group/hooks/useRecordGroupStates';
+import { isDefined } from 'twenty-ui';
 
 export const RecordTableBodyEffect = () => {
   const { objectNameSingular } = useContext(RecordTableContext);
 
   const [hasInitializedScroll, setHasInitiazedScroll] = useState(false);
+
+  const { viewGroupFieldMetadataItem, visibleRecordGroups } =
+    useRecordGroupStates({
+      objectNameSingular,
+    });
 
   const {
     fetchMoreRecords,
@@ -30,7 +37,10 @@ export const RecordTableBodyEffect = () => {
     loading,
     queryStateIdentifier,
     hasNextPage,
-  } = useLoadRecordIndexTable(objectNameSingular);
+  } = useLoadRecordIndexTable({
+    objectNameSingular,
+    visibleRecordGroups,
+  });
 
   const isFetchingMoreObjects = useRecoilValue(
     isFetchingMoreRecordsFamilyState(queryStateIdentifier),
@@ -139,6 +149,11 @@ export const RecordTableBodyEffect = () => {
 
   useEffect(() => {
     (async () => {
+      if (isDefined(viewGroupFieldMetadataItem)) {
+        // Avoid fetching more records if we are grouping by a field
+        // TODO: Is it the right place to do this ?
+        return;
+      }
       if (!isFetchingMoreObjects && tableLastRowVisible && hasNextPage) {
         await fetchMoreDebouncedIfRequested();
       }
@@ -151,6 +166,7 @@ export const RecordTableBodyEffect = () => {
     fetchMoreDebouncedIfRequested,
     isFetchingMoreObjects,
     tableLastRowVisible,
+    viewGroupFieldMetadataItem,
   ]);
 
   return <></>;

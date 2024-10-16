@@ -3,6 +3,7 @@ import { useRecoilValue } from 'recoil';
 
 import { useObjectMetadataItem } from '@/object-metadata/hooks/useObjectMetadataItem';
 import { recordIndexGroupDefinitionsState } from '@/object-record/record-index/states/recordIndexGroupDefinitionsState';
+import { FieldMetadataType } from '~/generated-metadata/graphql';
 
 type UseRecordGroupStatesParams = {
   objectNameSingular: string;
@@ -18,6 +19,14 @@ export const useRecordGroupStates = ({
   const { objectMetadataItem } = useObjectMetadataItem({
     objectNameSingular,
   });
+
+  const selectableFieldMetadataItems = useMemo(
+    () =>
+      objectMetadataItem.fields.filter(
+        (field) => field.type === FieldMetadataType.Select,
+      ),
+    [objectMetadataItem.fields],
+  );
 
   const viewGroupFieldMetadataItem = useMemo(() => {
     if (recordIndexGroupDefinitions.length === 0) return null;
@@ -55,5 +64,6 @@ export const useRecordGroupStates = ({
     hiddenRecordGroups,
     visibleRecordGroups,
     viewGroupFieldMetadataItem,
+    selectableFieldMetadataItems,
   };
 };

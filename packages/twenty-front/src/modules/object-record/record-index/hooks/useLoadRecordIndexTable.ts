@@ -12,6 +12,7 @@ import { useRecordTable } from '@/object-record/record-table/hooks/useRecordTabl
 import { SIGN_IN_BACKGROUND_MOCK_COMPANIES } from '@/sign-in-background-mock/constants/SignInBackgroundMockCompanies';
 import { isNull } from '@sniptt/guards';
 import { WorkspaceActivationStatus } from '~/generated/graphql';
+import { RecordGroupDefinition } from '@/object-record/record-group/types/RecordGroupDefinition';
 
 export const useFindManyParams = (
   objectNameSingular: string,
@@ -37,7 +38,15 @@ export const useFindManyParams = (
   return { objectNameSingular, filter, orderBy };
 };
 
-export const useLoadRecordIndexTable = (objectNameSingular: string) => {
+type UseLoadRecordIndexTableParams = {
+  objectNameSingular: string;
+  visibleRecordGroups: RecordGroupDefinition[];
+};
+
+export const useLoadRecordIndexTable = ({
+  objectNameSingular,
+  visibleRecordGroups,
+}: UseLoadRecordIndexTableParams) => {
   const { objectMetadataItem } = useObjectMetadataItem({
     objectNameSingular,
   });
@@ -49,6 +58,8 @@ export const useLoadRecordIndexTable = (objectNameSingular: string) => {
   const params = useFindManyParams(objectNameSingular);
 
   const recordGqlFields = useRecordTableRecordGqlFields({ objectMetadataItem });
+
+  // TODO: Don't fetch records based on visibleRecordGroups here, this hook instead should be placed somewhere else with a dedicated filter for a given visible record group
 
   const {
     records,
