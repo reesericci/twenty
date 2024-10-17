@@ -206,7 +206,7 @@ export class WorkspaceDatasourceFactory {
                   ? ['query', 'error']
                   : ['error'],
                 schema: dataSourceMetadata.schema,
-                subscribers: [GenericSubscriber],
+                // subscribers: [GenericSubscriber],
                 entities: cachedEntitySchemas,
                 ssl: this.environmentService.get('PG_SSL_ALLOW_SELF_SIGNED')
                   ? {
