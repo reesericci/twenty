@@ -13,6 +13,7 @@ import { ObjectRecordsToGraphqlConnectionHelper } from 'src/engine/api/graphql/g
 import { ProcessNestedRelationsHelper } from 'src/engine/api/graphql/graphql-query-runner/helpers/process-nested-relations.helper';
 import { assertIsValidUuid } from 'src/engine/api/graphql/workspace-query-runner/utils/assert-is-valid-uuid.util';
 import { assertMutationNotOnRemoteObject } from 'src/engine/metadata-modules/object-metadata/utils/assert-mutation-not-on-remote-object.util';
+import { TwentyQueryBuilder } from 'src/engine/twenty-orm/query-builder/twenty-query-builder';
 import { TwentyORMGlobalManager } from 'src/engine/twenty-orm/twenty-orm-global.manager';
 import { formatData } from 'src/engine/twenty-orm/utils/format-data.util';
 import { formatResult } from 'src/engine/twenty-orm/utils/format-result.util';
@@ -58,13 +59,15 @@ export class GraphqlQueryUpdateManyResolverService
       objectMetadataMapItem.nameSingular,
     );
 
+    const twentyQueryBuilder = new TwentyQueryBuilder(dataSource);
+
     const tableName = computeTableName(
       objectMetadataMapItem.nameSingular,
       objectMetadataMapItem.isCustom,
     );
 
     const withFilterQueryBuilder = graphqlQueryParser.applyFilterToBuilder(
-      queryBuilder,
+      twentyQueryBuilder,
       tableName,
       args.filter,
     );
