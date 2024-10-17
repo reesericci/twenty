@@ -18,14 +18,30 @@ export class TwentyQueryBuilder<
   override update(updateSet: Partial<Entity>): UpdateQueryBuilder<Entity>;
 
   override update(updateSet?: Partial<Entity>): UpdateQueryBuilder<Entity> {
+    const updateQueryBuilder = new TwentyUpdateQueryBuilder(this);
+
     if (updateSet === undefined) {
-      return super.update() as UpdateQueryBuilder<Entity>;
+      updateQueryBuilder.update();
+    } else {
+      updateQueryBuilder.update(updateSet);
     }
 
-    return super.update(updateSet);
+    return updateQueryBuilder;
+  }
+}
+
+class TwentyUpdateQueryBuilder<
+  Entity extends ObjectLiteral,
+> extends UpdateQueryBuilder<Entity> {
+  constructor(queryBuilder: SelectQueryBuilder<Entity>) {
+    super(queryBuilder);
   }
 
   async execute(): Promise<any> {
-    return super.execute();
+    console.log('execute from TwentyUpdateQueryBuilder');
+
+    const result = await super.execute();
+
+    return result;
   }
 }

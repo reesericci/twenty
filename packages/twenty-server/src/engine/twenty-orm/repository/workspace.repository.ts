@@ -14,7 +14,6 @@ import {
   RemoveOptions,
   Repository,
   SaveOptions,
-  SelectQueryBuilder,
   UpdateResult,
 } from 'typeorm';
 import { PickKeysByType } from 'typeorm/common/PickKeysByType';
@@ -24,7 +23,6 @@ import { UpsertOptions } from 'typeorm/repository/UpsertOptions';
 import { WorkspaceInternalContext } from 'src/engine/twenty-orm/interfaces/workspace-internal-context.interface';
 
 import { ObjectMetadataMapItem } from 'src/engine/metadata-modules/utils/generate-object-metadata-map.util';
-import { TwentyQueryBuilder } from 'src/engine/twenty-orm/query-builder/twenty-query-builder';
 import { WorkspaceEntitiesStorage } from 'src/engine/twenty-orm/storage/workspace-entities.storage';
 import { formatData } from 'src/engine/twenty-orm/utils/format-data.util';
 import { formatResult } from 'src/engine/twenty-orm/utils/format-result.util';
@@ -459,19 +457,19 @@ export class WorkspaceRepository<
     return manager.update(this.target, criteria, partialEntity);
   }
 
-  override createQueryBuilder(
-    alias?: string,
-    queryRunner?: QueryRunner,
-  ): SelectQueryBuilder<Entity> {
-    const queryBuilder = new TwentyQueryBuilder(
-      this.manager.connection,
-      queryRunner ?? this.manager.queryRunner,
-    );
+  // override createQueryBuilder(
+  //   alias?: string,
+  //   queryRunner?: QueryRunner,
+  // ): SelectQueryBuilder<Entity> {
+  //   const queryBuilder = new TwentyQueryBuilder(
+  //     this.manager.connection,
+  //     queryRunner ?? this.manager.queryRunner,
+  //   );
 
-    return alias
-      ? queryBuilder.from(this.target, alias)
-      : (queryBuilder as SelectQueryBuilder<Entity>);
-  }
+  //   return alias
+  //     ? queryBuilder.from(this.target, alias)
+  //     : (queryBuilder as SelectQueryBuilder<Entity>);
+  // }
 
   override async upsert(
     entityOrEntities:

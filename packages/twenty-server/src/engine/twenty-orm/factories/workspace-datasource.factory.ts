@@ -1,6 +1,13 @@
 import { Injectable, Logger } from '@nestjs/common';
 
-import { EntitySchema } from 'typeorm';
+import {
+  DataSource,
+  EntitySchema,
+  EntitySubscriberInterface,
+  InsertEvent,
+  RemoveEvent,
+  UpdateEvent,
+} from 'typeorm';
 
 import { EnvironmentService } from 'src/engine/core-modules/environment/environment.service';
 import { DataSourceService } from 'src/engine/metadata-modules/data-source/data-source.service';
@@ -13,6 +20,65 @@ import {
 import { EntitySchemaFactory } from 'src/engine/twenty-orm/factories/entity-schema.factory';
 import { CacheManager } from 'src/engine/twenty-orm/storage/cache-manager.storage';
 import { WorkspaceCacheStorageService } from 'src/engine/workspace-cache-storage/workspace-cache-storage.service';
+
+function createGenericSubscriber(workspaceId: string) {
+  return class GenericSubscriber implements EntitySubscriberInterface {
+    private readonly logger = new Logger(GenericSubscriber.name);
+
+    constructor(dataSource: DataSource) {
+      dataSource.subscribers.push(this);
+      this.logger.log(
+        `GenericSubscriber registered for workspace ${workspaceId}`,
+      );
+    }
+
+    afterLoad(entity: any) {
+      this.logger.log(`Entity loaded for workspace ${workspaceId}:`, entity);
+    }
+
+    beforeInsert(event: InsertEvent<any>) {
+      this.logger.log(
+        `Before insert in workspace ${workspaceId}:`,
+        event.entity,
+      );
+    }
+
+    afterInsert(event: InsertEvent<any>) {
+      this.logger.log(
+        `After insert in workspace ${workspaceId}:`,
+        event.entity,
+      );
+    }
+
+    beforeUpdate(event: UpdateEvent<any>) {
+      this.logger.log(
+        `Before update in workspace ${workspaceId}:`,
+        event.entity,
+      );
+    }
+
+    afterUpdate(event: UpdateEvent<any>) {
+      this.logger.log(
+        `After update in workspace ${workspaceId}:`,
+        event.entity,
+      );
+    }
+
+    beforeRemove(event: RemoveEvent<any>) {
+      this.logger.log(
+        `Before remove in workspace ${workspaceId}:`,
+        event.entity,
+      );
+    }
+
+    afterRemove(event: RemoveEvent<any>) {
+      this.logger.log(
+        `After remove in workspace ${workspaceId}:`,
+        event.entity,
+      );
+    }
+  };
+}
 
 @Injectable()
 export class WorkspaceDatasourceFactory {
@@ -124,6 +190,8 @@ export class WorkspaceDatasourceFactory {
               cachedEntitySchemas = entitySchemas;
             }
 
+            const GenericSubscriber = createGenericSubscriber(workspaceId);
+
             const workspaceDataSource = new WorkspaceDataSource(
               {
                 workspaceId,
@@ -138,6 +206,7 @@ export class WorkspaceDatasourceFactory {
                   ? ['query', 'error']
                   : ['error'],
                 schema: dataSourceMetadata.schema,
+                subscribers: [GenericSubscriber],
                 entities: cachedEntitySchemas,
                 ssl: this.environmentService.get('PG_SSL_ALLOW_SELF_SIGNED')
                   ? {
@@ -148,6 +217,8 @@ export class WorkspaceDatasourceFactory {
             );
 
             await workspaceDataSource.initialize();
+
+            new GenericSubscriber(workspaceDataSource);
 
             return workspaceDataSource;
           },
