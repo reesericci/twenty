@@ -3,7 +3,6 @@ import { useRecoilState, useRecoilValue } from 'recoil';
 import { useDebouncedCallback } from 'use-debounce';
 
 import { lastShowPageRecordIdState } from '@/object-record/record-field/states/lastShowPageRecordId';
-import { useLoadRecordIndexTable } from '@/object-record/record-index/hooks/useLoadRecordIndexTable';
 import { ROW_HEIGHT } from '@/object-record/record-table/constants/RowHeight';
 import { RecordTableContext } from '@/object-record/record-table/contexts/RecordTableContext';
 import { useRecordTableStates } from '@/object-record/record-table/hooks/internal/useRecordTableStates';
@@ -18,8 +17,9 @@ import { isNonEmptyString } from '@sniptt/guards';
 import { useScrollToPosition } from '~/hooks/useScrollToPosition';
 import { useRecordGroupStates } from '@/object-record/record-group/hooks/useRecordGroupStates';
 import { isDefined } from 'twenty-ui';
+import { useLoadRecordGroupIndexTable } from '@/object-record/record-index/hooks/useLoadRecordGroupIndexTable';
 
-export const RecordTableBodyEffect = () => {
+export const RecordGroupTableBodyEffect = () => {
   const { objectNameSingular } = useContext(RecordTableContext);
 
   const [hasInitializedScroll, setHasInitiazedScroll] = useState(false);
@@ -36,7 +36,7 @@ export const RecordTableBodyEffect = () => {
     loading,
     queryStateIdentifier,
     hasNextPage,
-  } = useLoadRecordIndexTable({
+  } = useLoadRecordGroupIndexTable({
     objectNameSingular,
   });
 
