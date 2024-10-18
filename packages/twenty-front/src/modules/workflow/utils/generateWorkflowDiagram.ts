@@ -1,9 +1,11 @@
+import { useGetManyServerlessFunctions } from '@/settings/serverless-functions/hooks/useGetManyServerlessFunctions';
 import { TRIGGER_STEP_ID } from '@/workflow/constants/TriggerStepId';
 import { WorkflowStep, WorkflowTrigger } from '@/workflow/types/Workflow';
 import {
   WorkflowDiagram,
   WorkflowDiagramEdge,
   WorkflowDiagramNode,
+  WorkflowDiagramNodeData,
 } from '@/workflow/types/WorkflowDiagram';
 import { splitWorkflowTriggerEventName } from '@/workflow/utils/splitWorkflowTriggerEventName';
 import { MarkerType } from '@xyflow/react';
@@ -14,9 +16,13 @@ import { capitalize } from '~/utils/string/capitalize';
 export const generateWorkflowDiagram = ({
   trigger,
   steps,
+  serverlessFunctionsData,
 }: {
   trigger: WorkflowTrigger | undefined;
   steps: Array<WorkflowStep>;
+  serverlessFunctionsData: ReturnType<
+    typeof useGetManyServerlessFunctions
+  >['serverlessFunctions'];
 }): WorkflowDiagram => {
   const nodes: Array<WorkflowDiagramNode> = [];
   const edges: Array<WorkflowDiagramEdge> = [];
@@ -29,13 +35,28 @@ export const generateWorkflowDiagram = ({
     yPos: number,
   ) => {
     const nodeId = step.id;
+    const nodeData: WorkflowDiagramNodeData = {
+      nodeType: 'action',
+      actionType: step.type,
+      label: step.name,
+    };
+
+    if (step.type === 'CODE') {
+      const serverlessFunctionData = serverlessFunctionsData.find(
+        ({ id }) => id === step.settings.input.serverlessFunctionId,
+      );
+      if (!isDefined(serverlessFunctionData)) {
+        throw new Error(
+          'Could not find the definition of the serverless function',
+        );
+      }
+
+      nodeData.label = serverlessFunctionData.name;
+    }
+
     nodes.push({
       id: nodeId,
-      data: {
-        nodeType: 'action',
-        actionType: step.type,
-        label: step.name,
-      },
+      data: nodeData,
       position: {
         x: xPos,
         y: yPos,

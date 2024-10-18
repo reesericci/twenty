@@ -1,3 +1,4 @@
+import { useGetManyServerlessFunctions } from '@/settings/serverless-functions/hooks/useGetManyServerlessFunctions';
 import { WorkflowVersion } from '@/workflow/types/Workflow';
 import { WorkflowDiagram } from '@/workflow/types/WorkflowDiagram';
 import { generateWorkflowDiagram } from '@/workflow/utils/generateWorkflowDiagram';
@@ -10,6 +11,9 @@ const EMPTY_DIAGRAM: WorkflowDiagram = {
 
 export const getWorkflowVersionDiagram = (
   workflowVersion: WorkflowVersion | undefined,
+  serverlessFunctionsData: ReturnType<
+    typeof useGetManyServerlessFunctions
+  >['serverlessFunctions'],
 ): WorkflowDiagram => {
   if (!isDefined(workflowVersion)) {
     return EMPTY_DIAGRAM;
@@ -18,5 +22,6 @@ export const getWorkflowVersionDiagram = (
   return generateWorkflowDiagram({
     trigger: workflowVersion.trigger ?? undefined,
     steps: workflowVersion.steps ?? [],
+    serverlessFunctionsData,
   });
 };
