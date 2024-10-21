@@ -1,10 +1,10 @@
-import { recordIndexGroupDefinitionsState } from '@/object-record/record-index/states/recordIndexGroupDefinitionsState';
+import { recordGroupDefinitionState } from '@/object-record/record-group/states/recordGroupDefinitionState';
+import { useRecoilComponentValueV2 } from '@/ui/utilities/state/component-state/hooks/useRecoilComponentValueV2';
 import { useMemo } from 'react';
-import { useRecoilValue } from 'recoil';
 
 export const useRecordGroupEnabled = () => {
-  const recordIndexGroupDefinitions = useRecoilValue(
-    recordIndexGroupDefinitionsState,
+  const recordIndexGroupDefinitions = useRecoilComponentValueV2(
+    recordGroupDefinitionState,
   );
 
   const isEnabled = useMemo(
