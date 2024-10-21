@@ -1,8 +1,8 @@
 import { useMemo } from 'react';
-import { useRecoilValue } from 'recoil';
 
 import { useObjectMetadataItem } from '@/object-metadata/hooks/useObjectMetadataItem';
-import { recordIndexGroupDefinitionsState } from '@/object-record/record-index/states/recordIndexGroupDefinitionsState';
+import { recordGroupDefinitionState } from '@/object-record/record-group/states/recordGroupDefinitionState';
+import { useRecoilComponentValueV2 } from '@/ui/utilities/state/component-state/hooks/useRecoilComponentValueV2';
 import { FieldMetadataType } from '~/generated-metadata/graphql';
 
 type UseRecordGroupStatesParams = {
@@ -12,8 +12,8 @@ type UseRecordGroupStatesParams = {
 export const useRecordGroupStates = ({
   objectNameSingular,
 }: UseRecordGroupStatesParams) => {
-  const recordIndexGroupDefinitions = useRecoilValue(
-    recordIndexGroupDefinitionsState,
+  const recordIndexGroupDefinitions = useRecoilComponentValueV2(
+    recordGroupDefinitionState,
   );
 
   const { objectMetadataItem } = useObjectMetadataItem({

@@ -1,8 +1,7 @@
 import { useEffect } from 'react';
 import { useRecoilValue, useSetRecoilState } from 'recoil';
 
-import { contextStoreCurrentObjectMetadataIdState } from '@/context-store/states/contextStoreCurrentObjectMetadataIdState';
-import { contextStoreTargetedRecordIdsState } from '@/context-store/states/contextStoreTargetedRecordIdsState';
+import { contextStoreTargetedRecordsRuleState } from '@/context-store/states/contextStoreTargetedRecordsRuleState';
 import { useObjectMetadataItem } from '@/object-metadata/hooks/useObjectMetadataItem';
 import { useRecordBoard } from '@/object-record/record-board/hooks/useRecordBoard';
 import { recordIndexFieldDefinitionsState } from '@/object-record/record-index/states/recordIndexFieldDefinitionsState';
@@ -10,7 +9,8 @@ import { recordIndexIsCompactModeActiveState } from '@/object-record/record-inde
 import { recordIndexKanbanFieldMetadataIdState } from '@/object-record/record-index/states/recordIndexKanbanFieldMetadataIdState';
 import { FieldMetadataType } from '~/generated-metadata/graphql';
 import { isDefined } from '~/utils/isDefined';
-import { recordIndexGroupDefinitionsState } from '@/object-record/record-index/states/recordIndexGroupDefinitionsState';
+import { recordGroupDefinitionState } from '@/object-record/record-group/states/recordGroupDefinitionState';
+import { useRecoilComponentValueV2 } from '@/ui/utilities/state/component-state/hooks/useRecoilComponentValueV2';
 
 type RecordIndexBoardDataLoaderEffectProps = {
   objectNameSingular: string;
@@ -29,8 +29,8 @@ export const RecordIndexBoardDataLoaderEffect = ({
     recordIndexFieldDefinitionsState,
   );
 
-  const recordIndexGroupDefinitions = useRecoilValue(
-    recordIndexGroupDefinitionsState,
+  const recordIndexGroupDefinitions = useRecoilComponentValueV2(
+    recordGroupDefinitionState,
   );
 
   const recordIndexKanbanFieldMetadataId = useRecoilValue(
@@ -94,32 +94,23 @@ export const RecordIndexBoardDataLoaderEffect = ({
 
   const selectedRecordIds = useRecoilValue(selectedRecordIdsSelector());
 
-  const setContextStoreTargetedRecordIds = useSetRecoilState(
-    contextStoreTargetedRecordIdsState,
-  );
-
-  const setContextStoreCurrentObjectMetadataItem = useSetRecoilState(
-    contextStoreCurrentObjectMetadataIdState,
+  const setContextStoreTargetedRecords = useSetRecoilState(
+    contextStoreTargetedRecordsRuleState,
   );
 
   useEffect(() => {
-    setContextStoreTargetedRecordIds(selectedRecordIds);
-  }, [selectedRecordIds, setContextStoreTargetedRecordIds]);
-
-  useEffect(() => {
-    setContextStoreTargetedRecordIds(selectedRecordIds);
-    setContextStoreCurrentObjectMetadataItem(objectMetadataItem?.id);
+    setContextStoreTargetedRecords({
+      mode: 'selection',
+      selectedRecordIds: selectedRecordIds,
+    });
 
     return () => {
-      setContextStoreTargetedRecordIds([]);
-      setContextStoreCurrentObjectMetadataItem(null);
+      setContextStoreTargetedRecords({
+        mode: 'selection',
+        selectedRecordIds: [],
+      });
     };
-  }, [
-    objectMetadataItem?.id,
-    selectedRecordIds,
-    setContextStoreCurrentObjectMetadataItem,
-    setContextStoreTargetedRecordIds,
-  ]);
+  }, [selectedRecordIds, setContextStoreTargetedRecords]);
 
   return <></>;
 };
