@@ -131,7 +131,7 @@ export const RecordIndexOptionsDropdownContent = ({
     viewGroupFieldMetadataItem,
     selectableFieldMetadataItems,
   } = useRecordGroupStates({
-    objectNameSingular,
+    objectNameSingular: objectMetadataItem.nameSingular,
   });
   const { handleFieldMetadataItemChange } = useRecordGroupSelector({
     viewBarComponentId: recordIndexId,
@@ -142,7 +142,7 @@ export const RecordIndexOptionsDropdownContent = ({
     });
   const { handleOrderChange: handleRecordGroupOrderChange } =
     useRecordGroupReorder({
-      objectNameSingular,
+      objectNameSingular: objectMetadataItem.nameSingular,
       viewBarId: recordIndexId,
     });
 
