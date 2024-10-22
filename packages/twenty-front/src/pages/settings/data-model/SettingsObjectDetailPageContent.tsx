@@ -37,7 +37,7 @@ const StyledTabListContainer = styled.div`
   .tab-list {
     padding-left: 0px;
   }
-  .tab-list > div{
+  .tab-list > div {
     padding: ${({ theme }) => theme.spacing(3) + ' 0'};
   }
 `;
