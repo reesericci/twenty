@@ -68,18 +68,23 @@ export const SettingsAccountsCalendarChannelDetails = ({
           title="Contact auto-creation"
           description="Automatically create contacts for people you've participated in an event with."
         />
+
         <Card>
           <SettingsOptionCardContent
-            title="Auto-creation"
-            description="Automatically create contacts for people."
-            onClick={() =>
-              handleContactAutoCreationToggle(
-                !calendarChannel.isContactAutoCreationEnabled,
-              )
+            title={
+              <label htmlFor="auto-creation" style={{ cursor: 'pointer' }}>
+                Auto-creation
+                <span style={{ position: 'absolute', inset: 0 }}></span>
+              </label>
             }
+            description="Automatically create contacts for people."
           >
             <StyledToggle
+              id="auto-creation"
               value={calendarChannel.isContactAutoCreationEnabled}
+              onChange={(checked) => {
+                handleContactAutoCreationToggle(checked);
+              }}
             />
           </SettingsOptionCardContent>
         </Card>

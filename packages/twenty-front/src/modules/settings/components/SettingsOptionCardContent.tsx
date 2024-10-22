@@ -1,9 +1,8 @@
-import styled from '@emotion/styled';
-import { useTheme } from '@emotion/react';
-
 import { CardContent } from '@/ui/layout/card/components/CardContent';
-import { IconComponent } from 'twenty-ui';
+import { useTheme } from '@emotion/react';
+import styled from '@emotion/styled';
 import { ReactNode } from 'react';
+import { IconComponent } from 'twenty-ui';
 
 type SettingsOptionCardContentProps = {
   Icon?: IconComponent;
@@ -59,7 +58,11 @@ export const SettingsOptionCardContent = ({
   const theme = useTheme();
 
   return (
-    <StyledCardContent onClick={onClick} divider={divider}>
+    <StyledCardContent
+      onClick={onClick}
+      divider={divider}
+      style={{ position: 'relative' }}
+    >
       {Icon && (
         <StyledIcon>
           <Icon size={theme.icon.size.md} stroke={theme.icon.stroke.md} />
