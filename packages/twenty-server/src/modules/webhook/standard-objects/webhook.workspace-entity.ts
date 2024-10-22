@@ -39,6 +39,16 @@ export class WebhookWorkspaceEntity extends BaseWorkspaceEntity {
   operation: string;
 
   @WorkspaceField({
+    standardId: WEBHOOK_STANDARD_FIELD_IDS.operations,
+    type: FieldMetadataType.ARRAY,
+    label: 'Operations',
+    description: 'Webhook operations',
+    icon: 'IconCheckbox',
+    defaultValue: ['*.*'],
+  })
+  operations: string[];
+
+  @WorkspaceField({
     standardId: WEBHOOK_STANDARD_FIELD_IDS.description,
     type: FieldMetadataType.TEXT,
     label: 'Description',
