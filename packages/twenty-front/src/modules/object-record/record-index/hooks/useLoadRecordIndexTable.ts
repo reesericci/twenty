@@ -6,11 +6,14 @@ import { useObjectMetadataItem } from '@/object-metadata/hooks/useObjectMetadata
 import { useFindManyRecords } from '@/object-record/hooks/useFindManyRecords';
 import { turnSortsIntoOrderBy } from '@/object-record/object-sort-dropdown/utils/turnSortsIntoOrderBy';
 import { turnFiltersIntoQueryFilter } from '@/object-record/record-filter/utils/turnFiltersIntoQueryFilter';
+import { useRecordGroupDefintion } from '@/object-record/record-group/hooks/useRecordGroupDefinition';
+import { isRecordGroupDefinitionValue } from '@/object-record/record-group/utils/isRecordGroupDefinitionValue';
 import { useRecordTableRecordGqlFields } from '@/object-record/record-index/hooks/useRecordTableRecordGqlFields';
 import { useRecordTableStates } from '@/object-record/record-table/hooks/internal/useRecordTableStates';
 import { useRecordTable } from '@/object-record/record-table/hooks/useRecordTable';
 import { SIGN_IN_BACKGROUND_MOCK_COMPANIES } from '@/sign-in-background-mock/constants/SignInBackgroundMockCompanies';
 import { isNull } from '@sniptt/guards';
+import { useMemo } from 'react';
 import { WorkspaceActivationStatus } from '~/generated/graphql';
 
 export const useFindManyParams = (
@@ -48,6 +51,8 @@ export const useLoadRecordIndexTable = ({
     objectNameSingular,
   });
 
+  const recordGroupDefinition = useRecordGroupDefintion();
+
   const { setRecordTableData, setIsRecordTableInitialLoading } =
     useRecordTable();
   const currentWorkspace = useRecoilValue(currentWorkspaceState);
@@ -55,6 +60,33 @@ export const useLoadRecordIndexTable = ({
   const params = useFindManyParams(objectNameSingular);
 
   const recordGqlFields = useRecordTableRecordGqlFields({ objectMetadataItem });
+
+  const groupByFilter = useMemo(() => {
+    if (isRecordGroupDefinitionValue(recordGroupDefinition)) {
+      const fieldMetadataItem = objectMetadataItem?.fields.find(
+        (fieldMetadataItem) =>
+          fieldMetadataItem.id === recordGroupDefinition.fieldMetadataId,
+      );
+
+      if (!fieldMetadataItem) {
+        return {};
+      }
+
+      return {
+        [fieldMetadataItem.name]: {
+          eq: recordGroupDefinition.value,
+        },
+      };
+    }
+
+    // TODO: Handle case when value is nullable
+
+    return {};
+  }, [objectMetadataItem?.fields, recordGroupDefinition]);
+
+  console.log('groupByFilter', groupByFilter);
+
+  // TODO: Don't fetch records based on visibleRecordGroups here, this hook instead should be placed somewhere else with a dedicated filter for a given visible record group
 
   const {
     records,
@@ -65,6 +97,10 @@ export const useLoadRecordIndexTable = ({
     hasNextPage,
   } = useFindManyRecords({
     ...params,
+    filter: {
+      ...params.filter,
+      ...groupByFilter,
+    },
     recordGqlFields,
     onCompleted: () => {
       setIsRecordTableInitialLoading(false);

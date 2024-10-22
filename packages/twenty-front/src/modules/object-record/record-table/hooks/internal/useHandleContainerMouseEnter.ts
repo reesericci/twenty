@@ -1,12 +1,12 @@
 import { useRecoilCallback } from 'recoil';
 
+import { useRecordTableScopeId } from '@/object-record/record-table/hooks/internal/useRecordTableScopeId';
 import { useMoveSoftFocusToCellOnHoverV2 } from '@/object-record/record-table/record-table-cell/hooks/useMoveSoftFocusToCellOnHoverV2';
 import { currentTableCellInEditModePositionComponentState } from '@/object-record/record-table/states/currentTableCellInEditModePositionComponentState';
 import { isSoftFocusOnTableCellComponentFamilyState } from '@/object-record/record-table/states/isSoftFocusOnTableCellComponentFamilyState';
 import { isSoftFocusUsingMouseState } from '@/object-record/record-table/states/isSoftFocusUsingMouseState';
 import { isTableCellInEditModeComponentFamilyState } from '@/object-record/record-table/states/isTableCellInEditModeComponentFamilyState';
 import { TableCellPosition } from '@/object-record/record-table/types/TableCellPosition';
-import { getScopeIdFromComponentId } from '@/ui/utilities/recoil-scope/utils/getScopeIdFromComponentId';
 import { getSnapshotValue } from '@/ui/utilities/recoil-scope/utils/getSnapshotValue';
 import { extractComponentFamilyState } from '@/ui/utilities/state/component-state/utils/extractComponentFamilyState';
 import { extractComponentState } from '@/ui/utilities/state/component-state/utils/extractComponentState';
@@ -20,7 +20,7 @@ export const useHandleContainerMouseEnter = ({
 }: {
   recordTableId: string;
 }) => {
-  const tableScopeId = getScopeIdFromComponentId(recordTableId);
+  const tableScopeId = useRecordTableScopeId(recordTableId);
 
   const { moveSoftFocusToCell } =
     useMoveSoftFocusToCellOnHoverV2(recordTableId);

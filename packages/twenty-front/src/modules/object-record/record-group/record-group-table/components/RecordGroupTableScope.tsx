@@ -1,7 +1,7 @@
-import { useRecordGroupStates } from '@/object-record/record-group/hooks/useRecordGroupStates';
-import { ReactNode } from 'react';
-import { RecordGroupTableInstanceContext } from '@/object-record/record-group/states/contexts/RecordGroupTableInstanceContext';
 import { useRecordGroupEnabled } from '@/object-record/record-group/hooks/useRecordGroupEnabled';
+import { useRecordGroups } from '@/object-record/record-group/hooks/useRecordGroups';
+import { RecordGroupTableInstanceContext } from '@/object-record/record-group/states/contexts/RecordGroupTableInstanceContext';
+import { ReactNode } from 'react';
 
 type RecordGroupTableScopeProps = {
   objectNameSingular: string;
@@ -14,7 +14,7 @@ export const RecordGroupTableScope = ({
 }: RecordGroupTableScopeProps) => {
   const { isEnabled } = useRecordGroupEnabled();
 
-  const { visibleRecordGroups } = useRecordGroupStates({ objectNameSingular });
+  const { visibleRecordGroups } = useRecordGroups({ objectNameSingular });
 
   if (!isEnabled) {
     return null;

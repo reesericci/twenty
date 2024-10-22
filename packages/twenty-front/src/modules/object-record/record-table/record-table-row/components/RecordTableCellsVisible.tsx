@@ -15,6 +15,11 @@ export const RecordTableCellsVisible = () => {
 
   const tableColumnsAfterFirst = visibleTableColumns.slice(1);
 
+  // TODO: Find why it's not fullfilled here
+  if (visibleTableColumns.length === 0) {
+    return null;
+  }
+
   return (
     <>
       <RecordTableCellWrapper column={visibleTableColumns[0]} columnIndex={0}>

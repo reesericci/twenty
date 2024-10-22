@@ -3,6 +3,7 @@ import { useRecoilState, useRecoilValue } from 'recoil';
 import { useDebouncedCallback } from 'use-debounce';
 
 import { lastShowPageRecordIdState } from '@/object-record/record-field/states/lastShowPageRecordId';
+import { useRecordGroups } from '@/object-record/record-group/hooks/useRecordGroups';
 import { useLoadRecordIndexTable } from '@/object-record/record-index/hooks/useLoadRecordIndexTable';
 import { ROW_HEIGHT } from '@/object-record/record-table/constants/RowHeight';
 import { RecordTableContext } from '@/object-record/record-table/contexts/RecordTableContext';
@@ -14,16 +15,15 @@ import { useScrollLeftValue } from '@/ui/utilities/scroll/hooks/useScrollLeftVal
 import { useScrollTopValue } from '@/ui/utilities/scroll/hooks/useScrollTopValue';
 import { useSetRecoilComponentState } from '@/ui/utilities/state/component-state/hooks/useSetRecoilComponentState';
 import { isNonEmptyString } from '@sniptt/guards';
-import { useScrollToPosition } from '~/hooks/useScrollToPosition';
-import { useRecordGroupStates } from '@/object-record/record-group/hooks/useRecordGroupStates';
 import { isDefined } from 'twenty-ui';
+import { useScrollToPosition } from '~/hooks/useScrollToPosition';
 
 export const RecordTableBodyEffect = () => {
   const { objectNameSingular } = useContext(RecordTableContext);
 
   const [hasInitializedScroll, setHasInitiazedScroll] = useState(false);
 
-  const { viewGroupFieldMetadataItem } = useRecordGroupStates({
+  const { viewGroupFieldMetadataItem } = useRecordGroups({
     objectNameSingular,
   });
 

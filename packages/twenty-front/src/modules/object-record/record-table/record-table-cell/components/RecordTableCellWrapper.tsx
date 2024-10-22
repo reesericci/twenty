@@ -4,14 +4,12 @@ import { useRecoilValue } from 'recoil';
 import { FieldMetadata } from '@/object-record/record-field/types/FieldMetadata';
 import { RecordTableCellContext } from '@/object-record/record-table/contexts/RecordTableCellContext';
 import { RecordTableRowContext } from '@/object-record/record-table/contexts/RecordTableRowContext';
+import { useRecordTableScopeId } from '@/object-record/record-table/hooks/internal/useRecordTableScopeId';
 import { RecordTableCellFieldContextWrapper } from '@/object-record/record-table/record-table-cell/components/RecordTableCellFieldContextWrapper';
-import { RecordTableScopeInternalContext } from '@/object-record/record-table/scopes/scope-internal-context/RecordTableScopeInternalContext';
 import { isSoftFocusOnTableCellComponentFamilyState } from '@/object-record/record-table/states/isSoftFocusOnTableCellComponentFamilyState';
 import { isTableCellInEditModeComponentFamilyState } from '@/object-record/record-table/states/isTableCellInEditModeComponentFamilyState';
 import { ColumnDefinition } from '@/object-record/record-table/types/ColumnDefinition';
 import { TableCellPosition } from '@/object-record/record-table/types/TableCellPosition';
-import { useAvailableScopeIdOrThrow } from '@/ui/utilities/recoil-scope/scopes-internal/hooks/useAvailableScopeId';
-import { getScopeIdOrUndefinedFromComponentId } from '@/ui/utilities/recoil-scope/utils/getScopeIdOrUndefinedFromComponentId';
 import { extractComponentFamilyState } from '@/ui/utilities/state/component-state/utils/extractComponentFamilyState';
 
 export const RecordTableCellWrapper = ({
@@ -23,10 +21,7 @@ export const RecordTableCellWrapper = ({
   columnIndex: number;
   children: React.ReactNode;
 }) => {
-  const tableScopeId = useAvailableScopeIdOrThrow(
-    RecordTableScopeInternalContext,
-    getScopeIdOrUndefinedFromComponentId(),
-  );
+  const tableScopeId = useRecordTableScopeId();
 
   const { rowIndex } = useContext(RecordTableRowContext);
 

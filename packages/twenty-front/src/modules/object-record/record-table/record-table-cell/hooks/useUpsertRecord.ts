@@ -27,6 +27,7 @@ export const useUpsertRecord = ({
         recordId: string,
         fieldName: string,
         recordTableId: string,
+        tableScopeId: string,
       ) => {
         const objectMetadataItems = snapshot
           .getLoadable(objectMetadataItemsState)
@@ -42,8 +43,6 @@ export const useUpsertRecord = ({
 
         const labelIdentifierFieldMetadataItem =
           getLabelIdentifierFieldMetadataItem(foundObjectMetadataItem);
-
-        const tableScopeId = getScopeIdFromComponentId(recordTableId);
 
         const recordTablePendingRecordIdState = extractComponentState(
           recordTablePendingRecordIdComponentState,

@@ -5,17 +5,16 @@ import { currentWorkspaceState } from '@/auth/states/currentWorkspaceState';
 import { useObjectMetadataItem } from '@/object-metadata/hooks/useObjectMetadataItem';
 import { useFindManyRecords } from '@/object-record/hooks/useFindManyRecords';
 import { turnSortsIntoOrderBy } from '@/object-record/object-sort-dropdown/utils/turnSortsIntoOrderBy';
+import { turnFiltersIntoQueryFilter } from '@/object-record/record-filter/utils/turnFiltersIntoQueryFilter';
+import { useRecordGroupDefintion } from '@/object-record/record-group/hooks/useRecordGroupDefinition';
+import { isRecordGroupDefinitionValue } from '@/object-record/record-group/utils/isRecordGroupDefinitionValue';
 import { useRecordTableRecordGqlFields } from '@/object-record/record-index/hooks/useRecordTableRecordGqlFields';
 import { useRecordTableStates } from '@/object-record/record-table/hooks/internal/useRecordTableStates';
 import { useRecordTable } from '@/object-record/record-table/hooks/useRecordTable';
 import { SIGN_IN_BACKGROUND_MOCK_COMPANIES } from '@/sign-in-background-mock/constants/SignInBackgroundMockCompanies';
 import { isNull } from '@sniptt/guards';
-import { WorkspaceActivationStatus } from '~/generated/graphql';
-import { recordGroupTableDefinitionSelector } from '@/object-record/record-group/states/recordGroupTableDefinitionSelector';
-import { useRecoilComponentValueV2 } from '@/ui/utilities/state/component-state/hooks/useRecoilComponentValueV2';
 import { useMemo } from 'react';
-import { isRecordGroupDefinitionValue } from '@/object-record/record-group/utils/isRecordGroupDefinitionValue';
-import { turnFiltersIntoQueryFilter } from '@/object-record/record-filter/utils/turnFiltersIntoQueryFilter';
+import { WorkspaceActivationStatus } from '~/generated/graphql';
 
 export const useFindManyParams = (
   objectNameSingular: string,
@@ -52,9 +51,7 @@ export const useLoadRecordGroupIndexTable = ({
     objectNameSingular,
   });
 
-  const recordGroupDefinition = useRecoilComponentValueV2(
-    recordGroupTableDefinitionSelector,
-  );
+  const recordGroupDefinition = useRecordGroupDefintion();
 
   const { setRecordTableData, setIsRecordTableInitialLoading } =
     useRecordTable();

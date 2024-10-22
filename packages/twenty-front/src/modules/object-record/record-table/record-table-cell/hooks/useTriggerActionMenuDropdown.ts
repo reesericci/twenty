@@ -11,8 +11,10 @@ import { extractComponentState } from '@/ui/utilities/state/component-state/util
 
 export const useTriggerActionMenuDropdown = ({
   recordTableId,
+  tableScopeId,
 }: {
   recordTableId: string;
+  tableScopeId: string;
 }) => {
   const triggerActionMenuDropdown = useRecoilCallback(
     ({ set, snapshot }) =>

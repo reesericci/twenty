@@ -24,19 +24,19 @@ import { SpreadsheetImportProvider } from '@/spreadsheet-import/provider/compone
 
 import { ActionMenu } from '@/action-menu/components/ActionMenu';
 import { contextStoreTargetedRecordsRuleState } from '@/context-store/states/contextStoreTargetedRecordsRuleState';
+import { useRecordBoard } from '@/object-record/record-board/hooks/useRecordBoard';
+import { recordGroupDefinitionState } from '@/object-record/record-group/states/recordGroupDefinitionState';
+import { useRecoilComponentCallbackStateV2 } from '@/ui/utilities/state/component-state/hooks/useRecoilComponentCallbackStateV2';
 import { ViewBar } from '@/views/components/ViewBar';
 import { ViewField } from '@/views/types/ViewField';
+import { ViewGroup } from '@/views/types/ViewGroup';
 import { ViewType } from '@/views/types/ViewType';
 import { mapViewFieldsToColumnDefinitions } from '@/views/utils/mapViewFieldsToColumnDefinitions';
 import { mapViewFiltersToFilters } from '@/views/utils/mapViewFiltersToFilters';
+import { mapViewGroupsToGroupDefinitions } from '@/views/utils/mapViewGroupsToGroupDefinitions';
 import { mapViewSortsToSorts } from '@/views/utils/mapViewSortsToSorts';
 import { useContext } from 'react';
 import { isDeeplyEqual } from '~/utils/isDeeplyEqual';
-import { ViewGroup } from '@/views/types/ViewGroup';
-import { mapViewGroupsToGroupDefinitions } from '@/views/utils/mapViewGroupsToGroupDefinitions';
-import { useRecordBoard } from '@/object-record/record-board/hooks/useRecordBoard';
-import { useRecoilComponentCallbackStateV2 } from '@/ui/utilities/state/component-state/hooks/useRecoilComponentCallbackStateV2';
-import { recordGroupDefinitionState } from '@/object-record/record-group/states/recordGroupDefinitionState';
 
 const StyledContainer = styled.div`
   display: flex;
@@ -170,8 +170,8 @@ export const RecordIndexContainer = () => {
                 mapViewFiltersToFilters(view.viewFilters, filterDefinitions),
               );
               setContextStoreTargetedRecordsRule((prev) => ({
-                  ...prev,
-                  filters: mapViewFiltersToFilters(
+                ...prev,
+                filters: mapViewFiltersToFilters(
                   view.viewFilters,
                   filterDefinitions,
                 ),

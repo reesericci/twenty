@@ -4,6 +4,7 @@ import { useRecoilValue } from 'recoil';
 import { useObjectMetadataItem } from '@/object-metadata/hooks/useObjectMetadataItem';
 import { RecordTableContext } from '@/object-record/record-table/contexts/RecordTableContext';
 import { useHandleContainerMouseEnter } from '@/object-record/record-table/hooks/internal/useHandleContainerMouseEnter';
+import { useRecordTableScopeId } from '@/object-record/record-table/hooks/internal/useRecordTableScopeId';
 import { useRecordTableStates } from '@/object-record/record-table/hooks/internal/useRecordTableStates';
 import { useRecordTableMoveFocus } from '@/object-record/record-table/hooks/useRecordTableMoveFocus';
 import { useCloseRecordTableCellV2 } from '@/object-record/record-table/record-table-cell/hooks/useCloseRecordTableCellV2';
@@ -30,6 +31,8 @@ export const RecordTableContextProvider = ({
 }) => {
   const { visibleTableColumnsSelector } = useRecordTableStates(recordTableId);
 
+  const tableScopeId = useRecordTableScopeId(recordTableId);
+
   const { objectMetadataItem } = useObjectMetadataItem({
     objectNameSingular,
   });
@@ -47,7 +50,13 @@ export const RecordTableContextProvider = ({
     recordId: string;
     fieldName: string;
   }) => {
-    upsertRecord(persistField, recordId, fieldName, recordTableId);
+    upsertRecord(
+      persistField,
+      recordId,
+      fieldName,
+      recordTableId,
+      tableScopeId,
+    );
   };
 
   const { openTableCell } = useOpenRecordTableCellV2(recordTableId);
@@ -77,6 +86,7 @@ export const RecordTableContextProvider = ({
 
   const { triggerActionMenuDropdown } = useTriggerActionMenuDropdown({
     recordTableId,
+    tableScopeId,
   });
 
   const handleActionMenuDropdown = (
