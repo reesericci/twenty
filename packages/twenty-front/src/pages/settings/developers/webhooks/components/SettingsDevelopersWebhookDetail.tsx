@@ -86,10 +86,12 @@ export const SettingsDevelopersWebhooksDetail = () => {
 
   const handleSave = async () => {
     setIsDirty(false);
+    const updatedOperation = `${operationObjectSingularName}.${operationAction}`;
     await updateOneRecord({
       idToUpdate: webhookId,
       updateOneRecordInput: {
-        operation: `${operationObjectSingularName}.${operationAction}`,
+        operation: updatedOperation,
+        operations: [updatedOperation],
         description: description,
       },
     });
