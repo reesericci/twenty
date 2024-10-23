@@ -1,6 +1,8 @@
 import { DeleteRecordsActionEffect } from '@/action-menu/actions/record-actions/components/DeleteRecordsActionEffect';
 import { ExportRecordsActionEffect } from '@/action-menu/actions/record-actions/components/ExportRecordsActionEffect';
 import { ManageFavoritesActionEffect } from '@/action-menu/actions/record-actions/components/ManageFavoritesActionEffect';
+import { ActivateWorkflowActionEffect } from '@/action-menu/actions/record-actions/workflow-actions/components/ActivateWorkflowActionEffect';
+import { CoreObjectNameSingular } from '@/object-metadata/types/CoreObjectNameSingular';
 import { ObjectMetadataItem } from '@/object-metadata/types/ObjectMetadataItem';
 import { useRightDrawer } from '@/ui/layout/right-drawer/hooks/useRightDrawer';
 import { useMemo } from 'react';
@@ -35,9 +37,25 @@ export const SingleRecordActionMenuEntriesSetter = ({
     [isInRightDrawer, closeRightDrawer],
   );
 
+  const workflowActions = useMemo(() => {
+    return [
+      {
+        ActionEffect: ActivateWorkflowActionEffect,
+        onActionExecutedCallback: undefined,
+      },
+    ];
+  }, []);
+
+  const allActions = [
+    ...(objectMetadataItem.nameSingular === CoreObjectNameSingular.Workflow
+      ? workflowActions
+      : []),
+    ...actions,
+  ];
+
   return (
     <>
-      {actions.map(({ ActionEffect, onActionExecutedCallback }, index) => (
+      {allActions.map(({ ActionEffect, onActionExecutedCallback }, index) => (
         <ActionEffect
           key={index}
           position={index}
