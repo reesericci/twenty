@@ -3,13 +3,17 @@ import { ComponentStateKeyV2 } from '@/ui/utilities/state/component-state/types/
 import { ComponentStateV2 } from '@/ui/utilities/state/component-state/types/ComponentStateV2';
 import { globalComponentInstanceContextMap } from '@/ui/utilities/state/component-state/utils/globalComponentInstanceContextMap';
 import { AtomEffect, atomFamily } from 'recoil';
+import { FixedLengthArray } from 'type-fest';
 
 import { isDefined } from '~/utils/isDefined';
 
 type CreateComponentInstanceStateArgs<ValueType> = {
   key: string;
   defaultValue: ValueType;
-  componentInstanceContext: ComponentInstanceStateContext<any> | null;
+  componentInstanceContext:
+    | FixedLengthArray<ComponentInstanceStateContext<any>, 2>
+    | ComponentInstanceStateContext<any>
+    | null;
   effects?: AtomEffect<ValueType>[];
 };
 

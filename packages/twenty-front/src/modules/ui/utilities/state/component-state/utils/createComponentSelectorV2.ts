@@ -10,18 +10,25 @@ import { globalComponentInstanceContextMap } from '@/ui/utilities/state/componen
 import { SelectorGetter } from '@/ui/utilities/state/types/SelectorGetter';
 import { SelectorSetter } from '@/ui/utilities/state/types/SelectorSetter';
 import { isDefined } from 'twenty-ui';
+import { FixedLengthArray } from 'type-fest';
 
 export function createComponentSelectorV2<ValueType>(options: {
   key: string;
   get: SelectorGetter<ValueType, ComponentStateKeyV2>;
-  componentInstanceContext: ComponentInstanceStateContext<any> | null;
+  componentInstanceContext:
+    | FixedLengthArray<ComponentInstanceStateContext<any>, 2>
+    | ComponentInstanceStateContext<any>
+    | null;
 }): ComponentReadOnlySelectorV2<ValueType>;
 
 export function createComponentSelectorV2<ValueType>(options: {
   key: string;
   get: SelectorGetter<ValueType, ComponentStateKeyV2>;
   set: SelectorSetter<ValueType, ComponentStateKeyV2>;
-  componentInstanceContext: ComponentInstanceStateContext<any> | null;
+  componentInstanceContext:
+    | FixedLengthArray<ComponentInstanceStateContext<any>, 2>
+    | ComponentInstanceStateContext<any>
+    | null;
 }): ComponentSelectorV2<ValueType>;
 
 export function createComponentSelectorV2<ValueType>({
@@ -33,7 +40,10 @@ export function createComponentSelectorV2<ValueType>({
   key: string;
   get: SelectorGetter<ValueType, ComponentStateKeyV2>;
   set?: SelectorSetter<ValueType, ComponentStateKeyV2>;
-  componentInstanceContext: ComponentInstanceStateContext<any> | null;
+  componentInstanceContext:
+    | FixedLengthArray<ComponentInstanceStateContext<any>, 2>
+    | ComponentInstanceStateContext<any>
+    | null;
 }): ComponentSelectorV2<ValueType> | ComponentReadOnlySelectorV2<ValueType> {
   if (isDefined(componentInstanceContext)) {
     globalComponentInstanceContextMap.set(key, componentInstanceContext);

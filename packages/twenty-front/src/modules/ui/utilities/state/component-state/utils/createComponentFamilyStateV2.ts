@@ -5,11 +5,15 @@ import { globalComponentInstanceContextMap } from '@/ui/utilities/state/componen
 import { AtomEffect, atomFamily, SerializableParam } from 'recoil';
 
 import { isDefined } from 'twenty-ui';
+import { FixedLengthArray } from 'type-fest';
 
 type CreateComponentFamilyStateArgs<ValueType> = {
   key: string;
   defaultValue: ValueType;
-  componentInstanceContext: ComponentInstanceStateContext<any> | null;
+  componentInstanceContext:
+    | FixedLengthArray<ComponentInstanceStateContext<any>, 2>
+    | ComponentInstanceStateContext<any>
+    | null;
   effects?: AtomEffect<ValueType>[];
 };
 

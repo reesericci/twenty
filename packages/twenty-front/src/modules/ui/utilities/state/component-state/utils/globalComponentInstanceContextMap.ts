@@ -1,5 +1,6 @@
 import { ComponentInstanceStateContext } from '@/ui/utilities/state/component-state/types/ComponentInstanceStateContext';
 import { isDefined } from 'twenty-ui';
+import { FixedLengthArray } from 'type-fest';
 
 class ComponentInstanceContextMap {
   constructor() {
@@ -8,11 +9,20 @@ class ComponentInstanceContextMap {
     }
   }
 
-  public get(key: string): ComponentInstanceStateContext<any> {
+  public get(
+    key: string,
+  ):
+    | FixedLengthArray<ComponentInstanceStateContext<any>, 2>
+    | ComponentInstanceStateContext<any> {
     return (window as any).componentComponentStateContextMap.get(key);
   }
 
-  public set(key: string, context: ComponentInstanceStateContext<any>) {
+  public set(
+    key: string,
+    context:
+      | FixedLengthArray<ComponentInstanceStateContext<any>, 2>
+      | ComponentInstanceStateContext<any>,
+  ) {
     (window as any).componentComponentStateContextMap.set(key, context);
   }
 }

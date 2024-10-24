@@ -8,6 +8,7 @@ import { globalComponentInstanceContextMap } from '@/ui/utilities/state/componen
 import { SelectorGetter } from '@/ui/utilities/state/types/SelectorGetter';
 import { SelectorSetter } from '@/ui/utilities/state/types/SelectorSetter';
 import { isDefined } from 'twenty-ui';
+import { FixedLengthArray } from 'type-fest';
 
 export const createComponentFamilySelectorV2 = <
   ValueType,
@@ -21,7 +22,10 @@ export const createComponentFamilySelectorV2 = <
   key: string;
   get: SelectorGetter<ValueType, ComponentFamilyStateKeyV2<FamilyKey>>;
   set?: SelectorSetter<ValueType, ComponentFamilyStateKeyV2<FamilyKey>>;
-  componentInstanceContext: ComponentInstanceStateContext<any> | null;
+  componentInstanceContext:
+    | FixedLengthArray<ComponentInstanceStateContext<any>, 2>
+    | ComponentInstanceStateContext<any>
+    | null;
 }):
   | ComponentFamilySelectorV2<ValueType, FamilyKey>
   | ComponentFamilyReadOnlySelectorV2<ValueType, FamilyKey> => {
