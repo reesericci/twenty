@@ -1,16 +1,17 @@
 import { useEffect } from 'react';
 import { useRecoilValue, useSetRecoilState } from 'recoil';
 
-import { contextStoreTargetedRecordsRuleState } from '@/context-store/states/contextStoreTargetedRecordsRuleState';
+import { contextStoreTargetedRecordsRuleComponentState } from '@/context-store/states/contextStoreTargetedRecordsRuleComponentState';
 import { useObjectMetadataItem } from '@/object-metadata/hooks/useObjectMetadataItem';
 import { useRecordBoard } from '@/object-record/record-board/hooks/useRecordBoard';
+import { recordGroupDefinitionsComponentState } from '@/object-record/record-group/states/recordGroupDefinitionsComponentState';
 import { recordIndexFieldDefinitionsState } from '@/object-record/record-index/states/recordIndexFieldDefinitionsState';
 import { recordIndexIsCompactModeActiveState } from '@/object-record/record-index/states/recordIndexIsCompactModeActiveState';
 import { recordIndexKanbanFieldMetadataIdState } from '@/object-record/record-index/states/recordIndexKanbanFieldMetadataIdState';
+import { useRecoilComponentValueV2 } from '@/ui/utilities/state/component-state/hooks/useRecoilComponentValueV2';
+import { useSetRecoilComponentStateV2 } from '@/ui/utilities/state/component-state/hooks/useSetRecoilComponentStateV2';
 import { FieldMetadataType } from '~/generated-metadata/graphql';
 import { isDefined } from '~/utils/isDefined';
-import { recordGroupDefinitionState } from '@/object-record/record-group/states/recordGroupDefinitionState';
-import { useRecoilComponentValueV2 } from '@/ui/utilities/state/component-state/hooks/useRecoilComponentValueV2';
 
 type RecordIndexBoardDataLoaderEffectProps = {
   objectNameSingular: string;
@@ -30,7 +31,7 @@ export const RecordIndexBoardDataLoaderEffect = ({
   );
 
   const recordIndexGroupDefinitions = useRecoilComponentValueV2(
-    recordGroupDefinitionState,
+    recordGroupDefinitionsComponentState,
   );
 
   const recordIndexKanbanFieldMetadataId = useRecoilValue(
@@ -69,7 +70,9 @@ export const RecordIndexBoardDataLoaderEffect = ({
     setColumns(recordIndexGroupDefinitions);
   }, [recordIndexGroupDefinitions, setColumns]);
 
-  // FixMe: Why do we have 2 useEffects for setFieldDefinitions?
+  // TODO: Remove this duplicate useEffect by ensuring it's not here because
+  // We want it to be triggered by a change of objectMetadataItem, which would be an anti-pattern
+  // As it is an unnecessary dependency
   useEffect(() => {
     setFieldDefinitions(recordIndexFieldDefinitions);
   }, [objectMetadataItem, setFieldDefinitions, recordIndexFieldDefinitions]);
@@ -94,8 +97,8 @@ export const RecordIndexBoardDataLoaderEffect = ({
 
   const selectedRecordIds = useRecoilValue(selectedRecordIdsSelector());
 
-  const setContextStoreTargetedRecords = useSetRecoilState(
-    contextStoreTargetedRecordsRuleState,
+  const setContextStoreTargetedRecords = useSetRecoilComponentStateV2(
+    contextStoreTargetedRecordsRuleComponentState,
   );
 
   useEffect(() => {
