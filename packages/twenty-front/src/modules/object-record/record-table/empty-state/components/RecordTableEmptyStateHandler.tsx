@@ -1,5 +1,7 @@
-import { useRecordTableStates } from '@/object-record/record-table/hooks/internal/useRecordTableStates';
-import { useRecoilValue } from 'recoil';
+import { isRecordTableInitialLoadingComponentState } from '@/object-record/record-table/states/isRecordTableInitialLoadingComponentState';
+import { recordTablePendingRecordIdComponentState } from '@/object-record/record-table/states/recordTablePendingRecordIdComponentState';
+import { tableRowIdsComponentState } from '@/object-record/record-table/states/tableRowIdsComponentState';
+import { useRecoilComponentValueV2 } from '@/ui/utilities/state/component-state/hooks/useRecoilComponentValueV2';
 import { isNull } from '@sniptt/guards';
 
 type RecordTableEmptyStateHandlerProps = {
@@ -9,23 +11,18 @@ type RecordTableEmptyStateHandlerProps = {
 };
 
 export const RecordTableEmptyStateHandler = ({
-  recordTableId,
   emptyStateComponent,
   children,
 }: RecordTableEmptyStateHandlerProps) => {
-  const {
-    isRecordTableInitialLoadingState,
-    tableRowIdsState,
-    pendingRecordIdState,
-  } = useRecordTableStates(recordTableId);
-
-  const isRecordTableInitialLoading = useRecoilValue(
-    isRecordTableInitialLoadingState,
+  const isRecordTableInitialLoading = useRecoilComponentValueV2(
+    isRecordTableInitialLoadingComponentState,
   );
 
-  const tableRowIds = useRecoilValue(tableRowIdsState);
+  const tableRowIds = useRecoilComponentValueV2(tableRowIdsComponentState);
 
-  const pendingRecordId = useRecoilValue(pendingRecordIdState);
+  const pendingRecordId = useRecoilComponentValueV2(
+    recordTablePendingRecordIdComponentState,
+  );
 
   const recordTableIsEmpty =
     !isRecordTableInitialLoading &&

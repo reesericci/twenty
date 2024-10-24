@@ -9,12 +9,15 @@ import { turnFiltersIntoQueryFilter } from '@/object-record/record-filter/utils/
 import { useRecordGroupDefintion } from '@/object-record/record-group/hooks/useRecordGroupDefinition';
 import { isRecordGroupDefinitionValue } from '@/object-record/record-group/utils/isRecordGroupDefinitionValue';
 import { useRecordTableRecordGqlFields } from '@/object-record/record-index/hooks/useRecordTableRecordGqlFields';
-import { useRecordTableStates } from '@/object-record/record-table/hooks/internal/useRecordTableStates';
 import { useRecordTable } from '@/object-record/record-table/hooks/useRecordTable';
+import { tableFiltersComponentState } from '@/object-record/record-table/states/tableFiltersComponentState';
+import { tableSortsComponentState } from '@/object-record/record-table/states/tableSortsComponentState';
 import { SIGN_IN_BACKGROUND_MOCK_COMPANIES } from '@/sign-in-background-mock/constants/SignInBackgroundMockCompanies';
+import { useRecoilComponentValueV2 } from '@/ui/utilities/state/component-state/hooks/useRecoilComponentValueV2';
 import { isNull } from '@sniptt/guards';
 import { useMemo } from 'react';
 import { WorkspaceActivationStatus } from '~/generated/graphql';
+import { isDefined } from '~/utils/isDefined';
 
 export const useFindManyParams = (
   objectNameSingular: string,
@@ -24,11 +27,14 @@ export const useFindManyParams = (
     objectNameSingular,
   });
 
-  const { tableFiltersState, tableSortsState } =
-    useRecordTableStates(recordTableId);
-
-  const tableFilters = useRecoilValue(tableFiltersState);
-  const tableSorts = useRecoilValue(tableSortsState);
+  const tableFilters = useRecoilComponentValueV2(
+    tableFiltersComponentState,
+    recordTableId,
+  );
+  const tableSorts = useRecoilComponentValueV2(
+    tableSortsComponentState,
+    recordTableId,
+  );
 
   const filter = turnFiltersIntoQueryFilter(
     tableFilters,
@@ -62,7 +68,10 @@ export const useLoadRecordIndexTable = ({
   const recordGqlFields = useRecordTableRecordGqlFields({ objectMetadataItem });
 
   const groupByFilter = useMemo(() => {
-    if (isRecordGroupDefinitionValue(recordGroupDefinition)) {
+    if (
+      isDefined(recordGroupDefinition) &&
+      isRecordGroupDefinitionValue(recordGroupDefinition)
+    ) {
       const fieldMetadataItem = objectMetadataItem?.fields.find(
         (fieldMetadataItem) =>
           fieldMetadataItem.id === recordGroupDefinition.fieldMetadataId,

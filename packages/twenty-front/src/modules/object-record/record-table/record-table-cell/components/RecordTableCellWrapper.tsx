@@ -1,16 +1,14 @@
 import { useContext, useMemo } from 'react';
-import { useRecoilValue } from 'recoil';
 
 import { FieldMetadata } from '@/object-record/record-field/types/FieldMetadata';
 import { RecordTableCellContext } from '@/object-record/record-table/contexts/RecordTableCellContext';
 import { RecordTableRowContext } from '@/object-record/record-table/contexts/RecordTableRowContext';
-import { useRecordTableScopeId } from '@/object-record/record-table/hooks/internal/useRecordTableScopeId';
 import { RecordTableCellFieldContextWrapper } from '@/object-record/record-table/record-table-cell/components/RecordTableCellFieldContextWrapper';
 import { isSoftFocusOnTableCellComponentFamilyState } from '@/object-record/record-table/states/isSoftFocusOnTableCellComponentFamilyState';
 import { isTableCellInEditModeComponentFamilyState } from '@/object-record/record-table/states/isTableCellInEditModeComponentFamilyState';
 import { ColumnDefinition } from '@/object-record/record-table/types/ColumnDefinition';
 import { TableCellPosition } from '@/object-record/record-table/types/TableCellPosition';
-import { extractComponentFamilyState } from '@/ui/utilities/state/component-state/utils/extractComponentFamilyState';
+import { useRecoilComponentFamilyValueV2 } from '@/ui/utilities/state/component-state/hooks/useRecoilComponentFamilyValueV2';
 
 export const RecordTableCellWrapper = ({
   children,
@@ -21,8 +19,6 @@ export const RecordTableCellWrapper = ({
   columnIndex: number;
   children: React.ReactNode;
 }) => {
-  const tableScopeId = useRecordTableScopeId();
-
   const { rowIndex } = useContext(RecordTableRowContext);
 
   const currentTableCellPosition: TableCellPosition = useMemo(
@@ -33,22 +29,14 @@ export const RecordTableCellWrapper = ({
     [columnIndex, rowIndex],
   );
 
-  const isTableCellInEditModeFamilyState = extractComponentFamilyState(
+  const isInEditMode = useRecoilComponentFamilyValueV2(
     isTableCellInEditModeComponentFamilyState,
-    tableScopeId,
+    currentTableCellPosition,
   );
 
-  const isSoftFocusOnTableCellFamilyState = extractComponentFamilyState(
+  const hasSoftFocus = useRecoilComponentFamilyValueV2(
     isSoftFocusOnTableCellComponentFamilyState,
-    tableScopeId,
-  );
-
-  const isInEditMode = useRecoilValue(
-    isTableCellInEditModeFamilyState(currentTableCellPosition),
-  );
-
-  const hasSoftFocus = useRecoilValue(
-    isSoftFocusOnTableCellFamilyState(currentTableCellPosition),
+    currentTableCellPosition,
   );
 
   return (

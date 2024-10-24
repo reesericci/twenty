@@ -1,27 +1,24 @@
-import { RecordGroupTableInstanceContext } from '@/object-record/record-group/states/contexts/RecordGroupTableInstanceContext';
-import { recordGroupDefinitionState } from '@/object-record/record-group/states/recordGroupDefinitionState';
+import { recordGroupDefinitionsComponentState } from '@/object-record/record-group/states/recordGroupDefinitionsComponentState';
 import { useRecoilComponentValueV2 } from '@/ui/utilities/state/component-state/hooks/useRecoilComponentValueV2';
-import { useContext, useMemo } from 'react';
-import { isDefined } from '~/utils/isDefined';
+import { useMemo } from 'react';
 
 export const useRecordGroupDefintion = () => {
   const recordGroupDefinitions = useRecoilComponentValueV2(
-    recordGroupDefinitionState,
+    recordGroupDefinitionsComponentState,
   );
 
-  const currentViewContext = useContext(RecordGroupTableInstanceContext);
+  // const currentViewContext = useContext(RecordGroupTableInstanceContext);
 
-  if (!isDefined(currentViewContext)) {
-    throw new Error('Current view context is not defined');
-  }
+  // if (!isDefined(currentViewContext)) {
+  //   throw new Error('Current view context is not defined');
+  // }
 
   const recordGroupDefinition = useMemo(
     () =>
       recordGroupDefinitions.find(
-        (recordGroupDefinition) =>
-          recordGroupDefinition.id === currentViewContext.instanceId,
+        (recordGroupDefinition) => recordGroupDefinition.id === 'TODO',
       ),
-    [recordGroupDefinitions, currentViewContext.instanceId],
+    [recordGroupDefinitions],
   );
 
   return recordGroupDefinition;

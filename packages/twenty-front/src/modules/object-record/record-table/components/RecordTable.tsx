@@ -6,7 +6,6 @@ import { RecordGroupTableScope } from '@/object-record/record-group/record-group
 import { RecordTableContextProvider } from '@/object-record/record-table/components/RecordTableContextProvider';
 import { RecordTableEmptyState } from '@/object-record/record-table/empty-state/components/RecordTableEmptyState';
 import { RecordTableEmptyStateHandler } from '@/object-record/record-table/empty-state/components/RecordTableEmptyStateHandler';
-import { useRecordTableStates } from '@/object-record/record-table/hooks/internal/useRecordTableStates';
 import { RecordTableBody } from '@/object-record/record-table/record-table-body/components/RecordTableBody';
 import { RecordTableBodyEffect } from '@/object-record/record-table/record-table-body/components/RecordTableBodyEffect';
 import { RecordTableHeader } from '@/object-record/record-table/record-table-header/components/RecordTableHeader';
@@ -32,8 +31,6 @@ export const RecordTable = ({
   objectNameSingular,
   onColumnsChange,
 }: RecordTableProps) => {
-  const { scopeId } = useRecordTableStates(recordTableId);
-
   const { isEnabled: isRecordGroupEnabled } = useRecordGroupEnabled();
 
   if (!isNonEmptyString(objectNameSingular)) {
@@ -42,7 +39,7 @@ export const RecordTable = ({
 
   return (
     <RecordTableScope
-      recordTableScopeId={scopeId}
+      recordTableId={recordTableId}
       onColumnsChange={onColumnsChange}
     >
       <RecordTableContextProvider
